@@ -1,2 +1,3 @@
 # ku-polls
-[https://github.com/vnsvakanda/ku-polls/wiki]
+
+[Wiki](https://github.com/vnsvakanda/ku-polls/wiki)
