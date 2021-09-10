@@ -10,4 +10,5 @@ Web applications for conducting surveys and polls to the community. [Click here!
 Iteration Plans
 
 * [Iteration1](https://github.com/vnsvakanda/ku-polls/wiki/Iteration-1)
+* [Iteration2](https://github.com/vnsvakanda/ku-polls/wiki/Iteration-2)
 
