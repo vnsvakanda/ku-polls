@@ -11,8 +11,10 @@ def create_question(question_text, days):
     given number of `days` offset to now (negative for questions published
     in the past, positive for questions that have yet to be published).
     """
-    time = timezone.now() + datetime.timedelta(days=days)
-    return Question.objects.create(question_text=question_text, pub_date=time)
+
+    pub_date_time = timezone.now() + datetime.timedelta(days=days)
+    end_date_time = datetime.timedelta(hours=23, minutes=59, seconds=59) + pub_date_time
+    return Question.objects.create(question_text=question_text, pub_date=pub_date_time, end_date=end_date_time)
 
 
 class QuestionIndexViewTests(TestCase):
@@ -100,6 +102,58 @@ class QuestionModelTests(TestCase):
         time = timezone.now() - datetime.timedelta(hours=23, minutes=59, seconds=59)
         recent_question = Question(pub_date=time)
         self.assertIs(recent_question.was_published_recently(), True)
+
+    def test_is_published_with_current_date_on_publication_date(self):
+        """
+        is_published() returns True if current date is on publication date.
+        """
+        time = timezone.now()
+        recent_question = Question(pub_date=time)
+        self.assertIs(recent_question.is_published(), True)
+
+    def test_is_published_with_current_date_before_publication_date(self):
+        """
+        is_published() returns False if current date is before publication date.
+        """
+        time = timezone.now() + datetime.timedelta(hours=23, minutes=59, seconds=59)
+        recent_question = Question(pub_date=time)
+        self.assertIs(recent_question.is_published(), False)
+
+    def test_is_published_wth_current_date_after_publication_date(self):
+        """
+        is_published() returns True if current date is after publication date.
+        """
+        time = timezone.now() - datetime.timedelta(hours=23, minutes=59, seconds=59)
+        recent_question = Question(pub_date=time)
+        self.assertIs(recent_question.is_published(), True)
+
+    def test_can_vote_with_current_date_on_end_date(self):
+        """
+        can_vote() returns False if voting is allowed on the end date.
+        """
+        time = timezone.now()
+        recent_question = Question(end_date=time)
+        self.assertIs(recent_question.can_vote(), False)
+
+    def test_can_vote_with_current_date_before_end_date(self):
+        """
+        can_vote() returns True if voting is allowed before the end date.
+        """
+        time = timezone.now() + datetime.timedelta(hours=23, minutes=59, seconds=59)
+        recent_question = Question(end_date=time)
+        self.assertIs(recent_question.can_vote(), True)
+
+    def test_can_vote_with_current_date_after_end_date(self):
+        """
+        can_vote() returns False if voting is allowed after the end date.
+        """
+        time = timezone.now() - datetime.timedelta(hours=23, minutes=59, seconds=59)
+        recent_question = Question(end_date=time)
+        self.assertIs(recent_question.can_vote(), False)
+
+
+
+
 
 class QuestionDetailViewTests(TestCase):
     def test_future_question(self):
