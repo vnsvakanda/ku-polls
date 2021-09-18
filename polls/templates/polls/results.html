@@ -1,10 +1,46 @@
-<h1>{{ question.question_text }}</h1>
+<style>
+    table {
+        font-family: "Times New Roman", Times, serif;
+        font-size: large;
+        width: 25%;
+        border-collapse: collapse;
+    }
+
+    td {
+        border: 1px solid black;
+        font-size: medium;
+        text-align: center;
+        background-color: #E0F2F1;
+    }
+
+    th {
+        border: 1px solid black;
+        text-align: center;
+        padding: 10px;
+        background-color: #FFF8B8;
+    }
+</style>
+
+<h1 style="background-color:powderblue;">{{ question.question_text }}</h1>
 
 <ul>
-{% for choice in question.choice_set.all %}
-    <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}</li>
-{% endfor %}
+    <table>
+        <tr>
+            <th>Choices</th>
+            <th>Votes</th>
+        </tr>
+        <tbody>
+            <td>
+            {% for choice in question.choice_set.all %}
+                <br>{{ choice.choice_text }}<br>
+            {% endfor %}</td>
+            <td>
+            {% for choice in question.choice_set.all %}
+                <br>{{ choice.votes }}<br>
+            {% endfor %}</td>
+        </tbody>
+    </table>
 </ul>
-
-<a href="{% url 'polls:detail' question.id %}">Vote again?</a>
+  
+<br><a href="{% url 'polls:detail' question.id %}">Vote again?</a>
 <br> <br><a href="{% url 'polls:index' %}"> <button class="result_button">Back to List of Polls</button></a>
