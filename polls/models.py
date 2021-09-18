@@ -24,7 +24,7 @@ class Question(models.Model):
 
     def can_vote(self):
         now = timezone.now()
-        if (now <= self.end_date):
+        if (now <= self.end_date and self.is_published()):
             return True
         return False
 
