@@ -1,3 +1,5 @@
+"""This is urls file to stipulate the path of the app."""
+
 from django.urls import path
 from . import views
 

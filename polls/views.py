@@ -1,7 +1,9 @@
-from django.http import HttpResponse, HttpResponseRedirect
+"""This is views file that use for implementation."""
+
+from django.http import HttpResponseRedirect
 from .models import Choice, Question
-from django.template import loader
-from django.http import Http404
+# from django.template import loader
+# from django.http import Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views import generic
@@ -9,16 +11,15 @@ from django.utils import timezone
 from django.contrib import messages
 
 
-
 class IndexView(generic.ListView):
+    """This is the interface class of the app."""
+
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
 
     def get_queryset(self):
-        """
-        Return the last five published questions (not including those set to be
-        published in the future).
-        """
+        """Return the last five published questions \
+            (not including those set to be published in the future)."""
         return Question.objects.filter(
             pub_date__lte=timezone.now()
         ).order_by('-pub_date')[:5]
@@ -35,11 +36,15 @@ class IndexView(generic.ListView):
 
 
 class ResultsView(generic.DetailView):
+    """This is class for create the result page interface."""
+
     model = Question
     template_name = 'polls/results.html'
 
 
 def vote(request, question_id):
+    """Fuction to submitted the vote to the specific polls \
+        that get voted."""
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
@@ -59,11 +64,12 @@ def vote(request, question_id):
 
 
 def view_poll(request, pk):
+    """Fuction to displayed if the polls is \
+        succesfully voted or not."""
     question = get_object_or_404(Question, pk=pk)
     if not question.can_vote():
         messages.error(request, "Cannot vote!")
         return redirect('polls:index')
 
     messages.success(request, "Voted successfully!")
-    return render(request,'polls/detail.html',{'question':question})
-
+    return render(request, 'polls/detail.html', {'question': question})
