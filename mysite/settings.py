@@ -110,6 +110,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+LOGIN_REDIRECT_URL = '/polls/' # or reverse("polls:index")
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
