@@ -3,22 +3,29 @@
 {% if messages %}
 <ul class="messages">
     {% for msg in messages %}
-        <p style="color: red" class="{{msg.tags}}">{{ msg }}</p>
+    <p style="color: red" class="{{msg.tags}}">{{ msg }}</p>
     {% endfor %}
 </ul>
 {% endif %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
 
-{% if latest_question_list %}
-    <ul>
-    {% for question in latest_question_list %}
-        <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
-        <a href="{% url 'polls:detail' question.id %}"> <button class="vote_button" {% if not question.can_vote %} disabled {% endif %} >Vote</button></a>
-        <a href="{% url 'polls:results' question.id %}"> <button class="result_button">Results</button></a>
-    {% endfor %}
-    </ul>
+{% if user.is_authenticated %}
+Hello, {{ user.username }}
 {% else %}
-    <p>No polls are available.</p>
+<a href="{% url 'login' %}">Login</a>
 {% endif %}
+<h2>Polls</h2>
 
+{% if latest_question_list %}
+<ul>
+    {% for question in latest_question_list %}
+    <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+    <a href="{% url 'polls:detail' question.id %}"> <button class="vote_button" {% if not question.can_vote %} disabled
+            {% endif %}>Vote</button></a>
+    <a href="{% url 'polls:results' question.id %}"> <button class="result_button">Results</button></a>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No polls are available.</p>
+{% endif %}

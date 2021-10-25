@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 
 class IndexView(generic.ListView):
@@ -42,6 +43,7 @@ class ResultsView(generic.DetailView):
     template_name = 'polls/results.html'
 
 
+@login_required
 def vote(request, question_id):
     """Fuction to submitted the vote to the specific polls \
         that get voted."""
