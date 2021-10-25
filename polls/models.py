@@ -3,6 +3,7 @@
 import datetime
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 
 class Question(models.Model):
@@ -45,8 +46,30 @@ class Choice(models.Model):
 
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
-    votes = models.IntegerField(default=0)
+    # votes = models.IntegerField(default=0)
 
     def __str__(self):
         """Display the choice text of print function."""
         return self.choice_text
+
+    # we want to be able to  write 'choice.votes' in our views
+    # and templates to get the number of votes for a Choice.
+    # We want the existing code to still work.
+    @property
+    def votes(self) -> int:
+        count = Vote.objects.filter(choice=self).count()
+        return count
+
+
+class Vote(models.Model):
+    # I like to explicitly specify the id
+    # id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(
+        User,
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Vote by {self.user.name} for {self.choice.choice_text}"

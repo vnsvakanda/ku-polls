@@ -1,7 +1,7 @@
 """This is views file that use for implementation."""
 
 from django.http import HttpResponseRedirect
-from .models import Choice, Question
+from .models import Choice, Question, Vote
 # from django.template import loader
 # from django.http import Http404
 from django.shortcuts import get_object_or_404, render, redirect
@@ -57,12 +57,37 @@ def vote(request, question_id):
             'error_message': "You didn't select a choice.",
         })
     else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
+        # record the vote
+        user = request.user
+        # Get the previous vote for this user (may not have)
+        vote = get_vote_for_user(user, question)
+        # case 1: user has not voted for this poll question yet
+        #         Create a new Vote object
+        if not vote:
+            vote = Vote(user=user, choice=selected_choice)
+        else:
+            # case 2: user has already vote
+            # Modify the existing vote and save it
+            vote.choice = selected_choice
+        vote.save()
+        # Always redirect after POST request to prevent multiple
+        # requests if user presses back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+
+
+def get_vote_for_user(user, poll_question):
+    """Find and return an existing vote for a user on a poll question.
+
+    Returns:
+        The user's Vote or None if no vote for this poll_question
+    """
+    votes = Vote.objects.filter(user=user)\
+                .filter(choice__question=poll_question)
+    # should be only one
+    if votes.count() == 0:
+        return None
+    else:
+        return votes[0]
 
 
 def view_poll(request, pk):
