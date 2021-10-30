@@ -10,6 +10,8 @@ from django.views import generic
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
 
 
 class IndexView(generic.ListView):
@@ -41,6 +43,12 @@ class ResultsView(generic.DetailView):
 
     model = Question
     template_name = 'polls/results.html'
+
+
+class SignUpView(generic.CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration/signup.html'
 
 
 @login_required
