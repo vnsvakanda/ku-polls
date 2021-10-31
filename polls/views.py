@@ -98,13 +98,18 @@ def get_vote_for_user(user, poll_question):
         return votes[0]
 
 
+@login_required
 def view_poll(request, pk):
     """Fuction to displayed if the polls is \
         succesfully voted or not."""
     question = get_object_or_404(Question, pk=pk)
+    previous_vote = False
+    if Vote.objects.filter(user=request.user):
+        previous_vote = Vote.objects.filter(user=request.user).first().choice.choice_text
     if not question.can_vote():
         messages.error(request, "Cannot vote!")
         return redirect('polls:index')
+    return render(request, 'polls/detail.html', {'question': question, 'previous_vote': previous_vote})
 
-    messages.success(request, "Voted successfully!")
-    return render(request, 'polls/detail.html', {'question': question})
+    # messages.success(request, "Voted successfully!")
+    # return render(request, 'polls/detail.html', {'question': question})
