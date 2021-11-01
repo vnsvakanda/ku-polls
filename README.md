@@ -16,3 +16,20 @@ Iteration Plans
 * [Iteration2](https://github.com/vnsvakanda/ku-polls/wiki/Iteration-2)
 * [Iteration3](https://github.com/vnsvakanda/ku-polls/wiki/Iteration-3)
 
+
+## Running KU Polls
+
+Users provided by the initial data (users.json):
+
+| Username  | Password    |
+|-----------|-------------|
+| admin     | 123456789    |
+| saimai     | natnaree2544    |
+| demo1     | Vote4me1    |
+| demo2     | Vote4me2    |
+
+## Initialize Polls Data in a New Installation
+### Command
+When someone installs the application in a new location, the person should be able to recreate the database using:
+```python3 manage.py migrate```
+```python3 manage.py loaddata users polls```
